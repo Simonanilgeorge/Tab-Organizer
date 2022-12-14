@@ -1,6 +1,5 @@
 
 
-
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status == 'complete') {
         chrome.tabs.query({}, deleteAndGroupTabs);
@@ -8,17 +7,21 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 })
 
 
-function deleteAndGroupTabs(tabs) {
+async function deleteAndGroupTabs(tabs) {
+
     let map = new Map()
+    let updatedId = null
     tabs.forEach((tab) => {
         if (map.has(tab.url)) {
-            chrome.tabs.update(map.get(tab.url), {active: true});
-            chrome.tabs.remove(tab.id, ()=>{})
+            updatedId = map.get(tab.url)
+            chrome.tabs.remove(tab.id, () => { })
         }
         else {
             map.set(tab.url, tab.id)
         }
     })
+
+    let res = await chrome.tabs.update(updatedId, { active: true });
 
     tabs.sort((a, b) => {
         if (a.url.split("//")[1] > b.url.split("//")[1]) {
