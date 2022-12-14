@@ -12,11 +12,11 @@ function deleteAndGroupTabs(tabs) {
     let map = new Map()
     tabs.forEach((tab) => {
         if (map.has(tab.url)) {
+            chrome.tabs.update(map.get(tab.url), {active: true});
             chrome.tabs.remove(tab.id, ()=>{})
-            chrome.tabs.update({ url: tab.url })
         }
         else {
-            map.set(tab.url, true)
+            map.set(tab.url, tab.id)
         }
     })
 
