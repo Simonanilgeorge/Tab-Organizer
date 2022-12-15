@@ -2,7 +2,9 @@
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status == 'complete') {
-        chrome.tabs.query({}, deleteAndGroupTabs);
+        setTimeout(()=>{
+            chrome.tabs.query({}, deleteAndGroupTabs);
+        },100)
     }
 })
 
@@ -11,23 +13,27 @@ async function deleteAndGroupTabs(tabs) {
 
     let map = new Map()
     let updatedId = null
-    tabs.forEach((tab) => {
+    tabs.forEach(async (tab) => {
         if (map.has(tab.url)) {
             updatedId = map.get(tab.url)
-            chrome.tabs.remove(tab.id, () => { })
+            let res = await chrome.tabs.update(updatedId, { active: true }, () => {
+                chrome.tabs.remove(tab.id, () => {
+
+                })
+            });
         }
         else {
             map.set(tab.url, tab.id)
         }
     })
 
-    let res = await chrome.tabs.update(updatedId, { active: true });
-
     tabs.sort((a, b) => {
-        if (a.url.split("//")[1] > b.url.split("//")[1]) {
+        let domainNameA = new URL(a.url).hostname.replace("www.", "")
+        let domainNameB = new URL(b.url).hostname.replace("www.", "")
+        if (domainNameA > domainNameB) {
             return 1
         }
-        else if (a.url.split("//")[1] < b.url.split("//")[1]) {
+        else if (domainNameA < domainNameB) {
             return -1
         }
         else {
