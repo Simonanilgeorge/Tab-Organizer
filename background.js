@@ -23,22 +23,24 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       }
     });
 
+
+    // console.log(map)
     // sort the tabs by domain name
-    tabs.sort((a, b) => {
-      const domainNameA = new URL(a.url).hostname.replace('www.', '');
-      const domainNameB = new URL(b.url).hostname.replace('www.', '');
-      if (domainNameA > domainNameB) {
-        return 1;
-      } else if (domainNameA < domainNameB) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
+    // tabs.sort((a, b) => {
+    //   const domainNameA = new URL(a.url).hostname.replace('www.', '');
+    //   const domainNameB = new URL(b.url).hostname.replace('www.', '');
+    //   if (domainNameA > domainNameB) {
+    //     return 1;
+    //   } else if (domainNameA < domainNameB) {
+    //     return -1;
+    //   } else {
+    //     return 0;
+    //   }
+    // });
   
-    // rearrange the tabs
-    tabs.forEach((tab) => {
-      chrome.tabs.move(tab.id, { index: tabs.length - 1 });
-    });
+    // // rearrange the tabs
+    // tabs.forEach((tab) => {
+    //   chrome.tabs.move(tab.id, { index: tabs.length - 1 });
+    // });
   }
   
